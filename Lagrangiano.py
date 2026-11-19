@@ -87,11 +87,12 @@ theta2_dd_sol = smp.simplify(soluciones[0][theta2_dd])
 
 #Lambdify transforma expresiones de SymPy en funciones lambda para calcular valores numéricos
 #(simbolico a numerico) funciones ecuaciones de lagrange
+#Volvemos a resolver las ecuaciones de E-L pero para 
 soluciones = smp.solve([EL1, EL2], theta1_dd, theta2_dd)
 LEF1 = smp.lambdify((theta1, theta2, theta1_d, theta2_d, t, m1, m2, L1, L2, g), soluciones[theta1_dd])
 LEF2 = smp.lambdify((theta1, theta2, theta1_d, theta2_d, t, m1, m2, L1, L2, g), soluciones[theta2_dd])
 
-#Paramteros y condiciones iniciales para los dos péndulos
+#Parametros y condiciones iniciales para los dos péndulos
 cond_inicial_1 = [2.0, 10.0, -1.0, 3.0]  #theta1, theta1_d, theta2, theta2_d, 
 cond_inicial_2 = [1.5, 2.0, -0.5, 1.0]
 m1_val = 2
@@ -106,8 +107,7 @@ solve_ivp de scipy no trabaja directamente con ecuaciones diferenciales de segun
 Tenemos que transformar las dos ecuaciones de segundo orden en u nsistema de cuatro ecuaciones de primer orden.
 '''
 
-#HASTA ACÁ
-
+#Parametros de tiempo y un vector z que contendrá las 4 ecuaciones
 def sistema_ec(t, z):
 
     theta1 = z[0]
@@ -115,7 +115,7 @@ def sistema_ec(t, z):
 
     theta2 = z[2]
     theta2_d = z[3]
-
+#Calculamos las aceleraciones angulares con los parámetros ingresados
     theta1_dd = LEF1(
         theta1, theta2,
         theta1_d, theta2_d,
@@ -127,7 +127,7 @@ def sistema_ec(t, z):
         theta1_d, theta2_d,
         t, m1_val, m2_val, L1_val, L2_val, g_val
     )
-
+#Devuelve una lista con cuatro elementos
     return [
         theta1_d,
         theta1_dd,
@@ -135,13 +135,27 @@ def sistema_ec(t, z):
         theta2_dd
     ]
 
+#Definimos urante cuánto tiempo queremos simular el movimiento del péndulo doble y en cuántos puntos queremos observarlo.
 t_inicial = 0
 t_final = 20
 
+
+#Acá usando la estructura de linspace le decimos desde que instante comenzamos hasta qué segundos 
+#y cuantos puntos va a tomar en ese tiempo
 tiempo = np.linspace(t_inicial, t_final, 1000)
 
-#Resolucion numerica del primer péndulo
 
+
+
+
+
+#HASTA ACÁ
+
+
+
+
+
+#Resolucion numerica del primer péndulo usando solve.ivp()
 sol1 = solve_ivp(
     sistema_ec,
     (t_inicial, t_final),
@@ -151,8 +165,6 @@ sol1 = solve_ivp(
     rtol=1e-9,
     atol=1e-9
 )
-
-#del segundo
 sol2 = solve_ivp(
     sistema_ec,
     (t_inicial, t_final),
