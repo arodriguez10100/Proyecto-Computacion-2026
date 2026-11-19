@@ -1,0 +1,4 @@
+De acá vi como calcular el péndulo doble de manera simbólica: https://github.com/lukepolson/youtube_channel/blob/main/Python%20Metaphysics%20Series/vid23.ipynb
+
+Otra forma donde me fijé para realizar los cálculos numéricos y me basé para animar el péndulo. 
+https://github.com/Younes-Toumi/Youtube-Channel/blob/main/Simulation%20with%20Python/Double%20Pendulum/double_pendulum.py
