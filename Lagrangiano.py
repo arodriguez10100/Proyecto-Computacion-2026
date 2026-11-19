@@ -1,16 +1,14 @@
-# FORMULA DEL LAGRANGIANO
-
 import numpy as np
-import sympy as smp  # Calculo Simbolico
+import sympy as smp  # Cálculo Simbolico
 from scipy.integrate import solve_ivp
 
 '''
-Definimos las variables en juego del sistema de manera simbolica en sympy,
+Definimos las variables en juego del sistema de manera simbólica en SymPy,
 esto para obtener las ecuaciones de Lagrange.
 
 Las longitudes de las cuerdas (L1, L2; que no tienen peso),
 las masas (m1, m2), la gravedad, el tiempo t.
-Dejamos por fuera el parametro de rozamiento porque analizamos
+Dejamos por fuera el parámetro de rozamiento porque analizamos
 un sistema ideal.
 '''
 
@@ -21,7 +19,7 @@ t, g = smp.symbols('t, g')
 m1, m2 = smp.symbols('m1, m2')
 L1, L2 = smp.symbols('L1, L2')
 
-#Definimos los angulos como funciones del tiempo
+#Definimos los ángulos como funciones del tiempo
 theta1, theta2 = smp.symbols('theta1, theta2', cls=smp.Function)
 
 theta1 = theta1(t)
@@ -43,7 +41,7 @@ y1 = -L1*smp.cos(theta1)
 x2 = L1*smp.sin(theta1) + L2*smp.sin(theta2)
 y2 = -L1*smp.cos(theta1) - L2*smp.cos(theta2)
 
-#ENERGIA CINETICA
+#ENERGIA CINÉTICA
 
 E1 = 1/2 * m1 * (smp.diff(x1, t)**2 + smp.diff(y1, t)**2)
 E2 = 1/2 * m2 * (smp.diff(x2, t)**2 + smp.diff(y2, t)**2)
@@ -73,7 +71,7 @@ EL2 = smp.diff(smp.diff(L, theta2_d), t) - smp.diff(L, theta2)
 EL1 = smp.simplify(EL1)
 EL2 = smp.simplify(EL2)
 
-#Resolvemos las ecuaciones de movimiento (aca usamos un diccionario)
+#Resolvemos las ecuaciones de movimiento (acá usamos un diccionario)
 soluciones = smp.solve(
     [EL1, EL2],
     [theta1_dd, theta2_dd],
@@ -92,9 +90,9 @@ soluciones = smp.solve([EL1, EL2], theta1_dd, theta2_dd)
 LEF1 = smp.lambdify((theta1, theta2, theta1_d, theta2_d, t, m1, m2, L1, L2, g), soluciones[theta1_dd])
 LEF2 = smp.lambdify((theta1, theta2, theta1_d, theta2_d, t, m1, m2, L1, L2, g), soluciones[theta2_dd])
 
-#Parametros y condiciones iniciales para los dos péndulos
-cond_inicial_1 = [2.0, 10.0, -1.0, 3.0]  #theta1, theta1_d, theta2, theta2_d, 
-cond_inicial_2 = [1.5, 2.0, -0.5, 1.0]
+#Parámetros y condiciones iniciales para los dos péndulos
+cond_inicial_1 = [2.0+10e-6, 2.0, -1.0, 3.0]  #theta1, theta1_d, theta2, theta2_d, 
+cond_inicial_2 = [2.0, 2.0, -1.0, 3.0]
 m1_val = 2
 m2_val = 2
 L1_val = 1
@@ -104,10 +102,10 @@ g_val = 9.8
 
 '''
 solve_ivp de scipy no trabaja directamente con ecuaciones diferenciales de segundo orden.
-Tenemos que transformar las dos ecuaciones de segundo orden en u nsistema de cuatro ecuaciones de primer orden.
+Tenemos que transformar las dos ecuaciones de segundo orden en un sistema de cuatro ecuaciones de primer orden.
 '''
 
-#Parametros de tiempo y un vector z que contendrá las 4 ecuaciones
+#Parámetros de tiempo y un vector z que contendrá las 4 ecuaciones
 def sistema_ec(t, z):
 
     theta1 = z[0]
@@ -135,27 +133,17 @@ def sistema_ec(t, z):
         theta2_dd
     ]
 
-#Definimos urante cuánto tiempo queremos simular el movimiento del péndulo doble y en cuántos puntos queremos observarlo.
+#Definimos durante cuánto tiempo queremos simular el movimiento del péndulo doble y en cuántos puntos queremos observarlo.
 t_inicial = 0
 t_final = 20
 
 
 #Acá usando la estructura de linspace le decimos desde que instante comenzamos hasta qué segundos 
 #y cuantos puntos va a tomar en ese tiempo
+
 tiempo = np.linspace(t_inicial, t_final, 1000)
 
-
-
-
-
-
-#HASTA ACÁ
-
-
-
-
-
-#Resolucion numerica del primer péndulo usando solve.ivp()
+#Resolución numérica del primer péndulo usando solve.ivp() con el método Runge-Kutta
 sol1 = solve_ivp(
     sistema_ec,
     (t_inicial, t_final),
@@ -175,7 +163,10 @@ sol2 = solve_ivp(
     atol=1e-9
 )
 
-#PRIMER PENDULO
+#Queremos extraer y separar los resultados de las dos simulaciones numéricas, 
+#sol1.y y sol2.y: contiene los valores de las variables del sistema
+
+#Péndulo 1
 
 theta1_sol_1 = sol1.y[0]
 theta2_sol_1 = sol1.y[2]
@@ -184,7 +175,7 @@ theta1_d_sol_1 = sol1.y[1]
 theta2_d_sol_1 = sol1.y[3]
 
 
-#SEGUNDO PENDULO
+#Péndulo 2
 
 theta1_sol_2 = sol2.y[0]
 theta2_sol_2 = sol2.y[2]
@@ -192,7 +183,56 @@ theta2_sol_2 = sol2.y[2]
 theta1_d_sol_2 = sol2.y[1]
 theta2_d_sol_2 = sol2.y[3]
 
-# PRIMER PENDULO
+#Importamos las librerías necesarias para graficar y realizar la animación
+
+import matplotlib.pyplot as plt
+#Viene de Matplotlib, para permite crear animaciones
+from matplotlib.animation import FuncAnimation
+
+#Creamos una figura que contenga dos graficos dentro de una: 1 fila y 2 columnas y el ancho 15 y el alto 6
+fig, axs = plt.subplots(1, 2, figsize=(15, 6))
+
+#Gráfica del péndulo 1
+axs[0].plot(theta1_sol_1, theta1_d_sol_1,
+            color='blue', label='Masa 1')
+
+axs[0].plot(theta2_sol_1, theta2_d_sol_1,
+            color='red', label='Masa 2')
+
+axs[0].set_title('Diagrama de fase: Péndulo 1')
+axs[0].set_xlabel('Posición angular (rad)')
+axs[0].set_ylabel('Velocidad angular (rad/s)')
+axs[0].legend()
+axs[0].grid()
+
+
+#Gráfica del péndulo 2
+axs[1].plot(theta1_sol_2, theta1_d_sol_2,
+            color='blue', label='Masa 1')
+
+axs[1].plot(theta2_sol_2, theta2_d_sol_2,
+            color='red', label='Masa 2')
+
+axs[1].set_title('Diagrama de fase: Péndulo 2')
+axs[1].set_xlabel('Posición angular (rad)')
+axs[1].set_ylabel('Velocidad angular (rad/s)')
+axs[1].legend()
+axs[1].grid()
+
+#Mostramos las gráficas
+plt.tight_layout()
+plt.show()
+
+
+#HASTA ACÁ
+
+'''
+Para esta sección realizamos la animación:
+Acá en principio, pasamos de los ángulos a coordenadas cartesianas para animar. Cabe destacar que 
+theta1_sol_1 (y 2) contiene todos los ángulos que obtuvo la primera simulación (y la segunda)
+'''
+
+#Péndulo 1
 
 x1_sol_1 = L1_val * np.sin(theta1_sol_1)
 y1_sol_1 = -L1_val * np.cos(theta1_sol_1)
@@ -200,90 +240,13 @@ y1_sol_1 = -L1_val * np.cos(theta1_sol_1)
 x2_sol_1 = x1_sol_1 + L2_val * np.sin(theta2_sol_1)
 y2_sol_1 = y1_sol_1 - L2_val * np.cos(theta2_sol_1)
 
-
-# SEGUNDO PENDULO
+#Péndulo 2
 
 x1_sol_2 = L1_val * np.sin(theta1_sol_2)
 y1_sol_2 = -L1_val * np.cos(theta1_sol_2)
 
 x2_sol_2 = x1_sol_2 + L2_val * np.sin(theta2_sol_2)
 y2_sol_2 = y1_sol_2 - L2_val * np.cos(theta2_sol_2)
-
-def energia_mecanica(th1, th2, th1_d, th2_d):
-
-    Ec = (
-        0.5 * m1_val * (L1_val * th1_d)**2
-        + 0.5 * m2_val * (
-            (L1_val * th1_d)**2
-            + (L2_val * th2_d)**2
-            + 2 * L1_val * L2_val * th1_d * th2_d
-            * np.cos(th1 - th2)
-        )
-    )
-
-    Ep = -g_val * (
-        (m1_val + m2_val) * L1_val * np.cos(th1)
-        + m2_val * L2_val * np.cos(th2)
-    )
-
-    return Ec + Ep
-
-
-Em1 = energia_mecanica(
-    theta1_sol_1, theta2_sol_1,
-    theta1_d_sol_1, theta2_d_sol_1
-)
-
-Em2 = energia_mecanica(
-    theta1_sol_2, theta2_sol_2,
-    theta1_d_sol_2, theta2_d_sol_2
-)
-
-print("PENDULO 1")
-print("Energia inicial:", Em1[0])
-print("Energia final:", Em1[-1])
-print("Error (%):", abs((Em1[-1]-Em1[0])/Em1[0])*100)
-
-print("\nPENDULO 2")
-print("Energia inicial:", Em2[0])
-print("Energia final:", Em2[-1])
-print("Error (%):", abs((Em2[-1]-Em2[0])/Em2[0])*100)
-
-import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation
-import matplotlib.pyplot as plt
-
-fig, axs = plt.subplots(1, 2, figsize=(14, 6))
-
-# PENDULO 1
-axs[0].plot(theta1_sol_1, theta1_d_sol_1,
-            color='blue', label='Masa 1')
-
-axs[0].plot(theta2_sol_1, theta2_d_sol_1,
-            color='red', label='Masa 2')
-
-axs[0].set_title('Diagrama de fase - Pendulo 1')
-axs[0].set_xlabel('Posicion angular (rad)')
-axs[0].set_ylabel('Velocidad angular (rad/s)')
-axs[0].legend()
-axs[0].grid()
-
-
-# PENDULO 2
-axs[1].plot(theta1_sol_2, theta1_d_sol_2,
-            color='blue', label='Masa 1')
-
-axs[1].plot(theta2_sol_2, theta2_d_sol_2,
-            color='red', label='Masa 2')
-
-axs[1].set_title('Diagrama de fase - Pendulo 2')
-axs[1].set_xlabel('Posicion angular (rad)')
-axs[1].set_ylabel('Velocidad angular (rad/s)')
-axs[1].legend()
-axs[1].grid()
-
-plt.tight_layout()
-plt.show()
 
 fig, ax = plt.subplots(figsize=(8, 8))
 
@@ -292,7 +255,7 @@ ax.set_ylim(-2.5, 2.5)
 ax.set_aspect('equal')
 ax.grid()
 
-ax.set_title("Comparacion de dos pendulos dobles")
+ax.set_title("Comparación de dos pendulos dobles")
 
 # Primer pendulo: azul
 linea1, = ax.plot([], [], 'o-', color='blue', lw=3, markersize=8)
@@ -352,3 +315,48 @@ animacion = FuncAnimation(
 )
 
 plt.show()
+
+'''
+Acá verificamos si el codigo está bien, calculamos la energía mecánica inicial y final de cada péndulo y calculamos
+el error porcentual entre ambas, como el sistema es conservativo, la energía debería conservarse así que debería ser razonablemente chico
+'''
+
+def energia_mecanica(th1, th2, th1_d, th2_d):
+
+    Ec = (
+        0.5 * m1_val * (L1_val * th1_d)**2
+        + 0.5 * m2_val * (
+            (L1_val * th1_d)**2
+            + (L2_val * th2_d)**2
+            + 2 * L1_val * L2_val * th1_d * th2_d
+            * np.cos(th1 - th2)
+        )
+    )
+
+    Ep = -g_val * (
+        (m1_val + m2_val) * L1_val * np.cos(th1)
+        + m2_val * L2_val * np.cos(th2)
+    )
+
+    return Ec + Ep
+
+
+Em1 = energia_mecanica(
+    theta1_sol_1, theta2_sol_1,
+    theta1_d_sol_1, theta2_d_sol_1
+)
+
+Em2 = energia_mecanica(
+    theta1_sol_2, theta2_sol_2,
+    theta1_d_sol_2, theta2_d_sol_2
+)
+
+print("Pendulo 1")
+print("Energia inicial:", Em1[0])
+print("Energia final:", Em1[-1])
+print("Error (%):", abs((Em1[-1]-Em1[0])/Em1[0])*100)
+
+print("Péndulo 2")
+print("Energia inicial:", Em2[0])
+print("Energia final:", Em2[-1])
+print("Error (%):", abs((Em2[-1]-Em2[0])/Em2[0])*100)
