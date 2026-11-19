@@ -223,9 +223,6 @@ axs[1].grid()
 plt.tight_layout()
 plt.show()
 
-
-#HASTA ACÁ
-
 '''
 Para esta sección realizamos la animación:
 Acá en principio, pasamos de los ángulos a coordenadas cartesianas para animar. Cabe destacar que 
@@ -248,8 +245,12 @@ y1_sol_2 = -L1_val * np.cos(theta1_sol_2)
 x2_sol_2 = x1_sol_2 + L2_val * np.sin(theta2_sol_2)
 y2_sol_2 = y1_sol_2 - L2_val * np.cos(theta2_sol_2)
 
+
+#Acá creamos una figura y un sistema de ejes donde posteriormente vamos a hacer la animación
+#Creamos una figura cuadrada de 8x8
 fig, ax = plt.subplots(figsize=(8, 8))
 
+#Configuramos la apariencia y que queden a la misma escala
 ax.set_xlim(-2.5, 2.5)
 ax.set_ylim(-2.5, 2.5)
 ax.set_aspect('equal')
@@ -257,17 +258,17 @@ ax.grid()
 
 ax.set_title("Comparación de dos pendulos dobles")
 
-# Primer pendulo: azul
+#Primer pendulo: azul
 linea1, = ax.plot([], [], 'o-', color='blue', lw=3, markersize=8)
 
-# Segundo pendulo: rojo
+#Segundo pendulo: rojo
 linea2, = ax.plot([], [], 'o-', color='red', lw=3, markersize=8)
 
-# Trayectorias
+#Trayectorias
 trayectoria1, = ax.plot([], [], color='blue', alpha=0.3)
 trayectoria2, = ax.plot([], [], color='red', alpha=0.3)
 
-
+#Acá definimos para comenzar la animación, comienza vacío
 def iniciar():
 
     linea1.set_data([], [])
@@ -278,22 +279,22 @@ def iniciar():
 
     return linea1, linea2, trayectoria1, trayectoria2
 
-
+#Acá va a ir actualizando las posiciones
 def actualizar(i):
 
-    # Primer pendulo
+    #Primer pendulo
     linea1.set_data(
         [0, x1_sol_1[i], x2_sol_1[i]],
         [0, y1_sol_1[i], y2_sol_1[i]]
     )
 
-    # Segundo pendulo
+    #Segundo pendulo
     linea2.set_data(
         [0, x1_sol_2[i], x2_sol_2[i]],
         [0, y1_sol_2[i], y2_sol_2[i]]
     )
 
-    # Trayectorias de las masas finales
+    #Trayectorias de las masas finales
     trayectoria1.set_data(
         x2_sol_1[:i+1], y2_sol_1[:i+1]
     )
@@ -320,7 +321,7 @@ plt.show()
 Acá verificamos si el codigo está bien, calculamos la energía mecánica inicial y final de cada péndulo y calculamos
 el error porcentual entre ambas, como el sistema es conservativo, la energía debería conservarse así que debería ser razonablemente chico
 '''
-
+#Definimos una función que reciba ciertos parámetros
 def energia_mecanica(th1, th2, th1_d, th2_d):
 
     Ec = (
@@ -340,23 +341,26 @@ def energia_mecanica(th1, th2, th1_d, th2_d):
 
     return Ec + Ep
 
-
+#Creamos variables que almacene la energía mecánica del primer péndulo
 Em1 = energia_mecanica(
     theta1_sol_1, theta2_sol_1,
     theta1_d_sol_1, theta2_d_sol_1
 )
-
+#Creamos variables que almacene la energía mecánica del segundo péndulo
 Em2 = energia_mecanica(
     theta1_sol_2, theta2_sol_2,
     theta1_d_sol_2, theta2_d_sol_2
 )
 
+#Imprimimos los valores
 print("Pendulo 1")
 print("Energia inicial:", Em1[0])
 print("Energia final:", Em1[-1])
+#Imprimimos el error porcentual entre ambas energías
 print("Error (%):", abs((Em1[-1]-Em1[0])/Em1[0])*100)
 
 print("Péndulo 2")
 print("Energia inicial:", Em2[0])
 print("Energia final:", Em2[-1])
+#Imprimimos el error porcentual entre ambas energías
 print("Error (%):", abs((Em2[-1]-Em2[0])/Em2[0])*100)
