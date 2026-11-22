@@ -1,5 +1,5 @@
 Simulación de dos péndulos dobles, donde se grafican los diagramas de espacio de fases de cada uno y posteriormente se realiza una animación con los dos péndulos durante 20 segundos.
-Ambos péndulos tienen condiciones iniciales casi idénticas, excepto que el primero se le suma un 10e^-6 a su angulo inicial, mostrando la sensibilidad
+Ambos péndulos tienen condiciones iniciales casi idénticas, excepto que el ángulo 1 inicial del primer péndulo se le suma un 10e^-6, mostrando la sensibilidad
 a las condiciones iniciales de los sistemas caóticos.
 El código se puede dividir en cinco bloques:
 1. Computación simbólica: Resolución de las ecuaciones del Lagrangiano de manera simbólica (usando la biblioteca SymPy).
