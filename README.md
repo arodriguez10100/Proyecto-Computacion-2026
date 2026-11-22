@@ -1,4 +1,4 @@
-Simulación de dos péndulos dobles, donde se grafican los diagramas de espacio de fases de cada uno y posteriormente una animación con los dos péndulos durante 20 segundos.
+Simulación de dos péndulos dobles, donde se grafican los diagramas de espacio de fases de cada uno y posteriormente se realiza una animación con los dos péndulos durante 20 segundos.
 Ambos péndulos tienen condiciones iniciales casi idénticas, excepto que el primero se le suma un 10e^-6 a su angulo inicial, mostrando la sensibilidad
 a las condiciones iniciales de los sistemas caóticos.
 El código se puede dividir en cinco bloques:
