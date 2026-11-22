@@ -84,7 +84,7 @@ theta2_dd_sol = smp.simplify(soluciones[0][theta2_dd])
 
 
 #Lambdify transforma expresiones de SymPy en funciones lambda para calcular valores numéricos
-#(simbolico a numerico) funciones ecuaciones de lagrange
+#(simbólico a numérico) ecuaciones de Lagrange
 #Volvemos a resolver las ecuaciones de E-L pero para los parámetros
 soluciones = smp.solve([EL1, EL2], theta1_dd, theta2_dd)
 LEF1 = smp.lambdify((theta1, theta2, theta1_d, theta2_d, t, m1, m2, L1, L2, g), soluciones[theta1_dd])
@@ -265,8 +265,10 @@ linea1, = ax.plot([], [], 'o-', color='blue', lw=3, markersize=8)
 linea2, = ax.plot([], [], 'o-', color='red', lw=3, markersize=8)
 
 #Trayectorias
-trayectoria1, = ax.plot([], [], color='blue', alpha=0.3)
-trayectoria2, = ax.plot([], [], color='red', alpha=0.3)
+trayectoria1, = ax.plot([], [], color='blue', alpha=0.5, label='Péndulo 1')
+trayectoria2, = ax.plot([], [], color='red', alpha=0.5, label='Péndulo 2')
+
+ax.legend()
 
 #Acá definimos para comenzar la animación, comienza vacío
 def iniciar():
