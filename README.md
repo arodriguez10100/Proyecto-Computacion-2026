@@ -7,4 +7,4 @@ El código se puede dividir en cinco bloques:
 (usando la biblioteca de SciPy y NumPy).
 3. Graficación de los diagramas de fase: Graficación de la velocidad angular en función del ángulo (usando la biblioteca de Matplotlib).
 4. Animación del movimiento de los péndulos: Se realizó en función de su posición durante 20 segundos (usando Funcanimation de la biblioteca de Matplotlib).
-5. Corroboración del código: Calculo de las energías mecánicas inicial y final de cada péndulo y el error porcentual respectivo.
+5. Corroboración del código: Cálculo de las energías mecánicas inicial y final de cada péndulo y el error porcentual respectivo.
