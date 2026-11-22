@@ -5,6 +5,6 @@ El código se puede dividir en cinco bloques:
 1. Computación simbólica: Resolución de las ecuaciones del Lagrangiano de manera simbólica (usando la biblioteca SymPy).
 2. Computación numérica: Ingreso de datos numéricos y condiciones iniciales a la expresión simbólica y resolución de las aceleraciones angulares
 (usando la biblioteca de SciPy y NumPy).
-3. Graficación de los diagramas de de fase: Graficación de la velocidad angular en función de la posición del ángulo (usando la biblioteca de Matplotlib).
+3. Graficación de los diagramas de fase: Graficación de la velocidad angular en función de la posición del ángulo (usando la biblioteca de Matplotlib).
 4. Animación del movimiento de los péndulos: Se realizó en función de su posición durante 20 segundos (usando Funcanimation de la biblioteca de Matplotlib).
 5. Corroboración del código: Calculo de las energías mecánicas inicial y final de cada péndulo y calculando el error porcentual respectivo.
