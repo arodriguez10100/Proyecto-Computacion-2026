@@ -85,7 +85,7 @@ theta2_dd_sol = smp.simplify(soluciones[0][theta2_dd])
 
 #Lambdify transforma expresiones de SymPy en funciones lambda para calcular valores numéricos
 #(simbolico a numerico) funciones ecuaciones de lagrange
-#Volvemos a resolver las ecuaciones de E-L pero para 
+#Volvemos a resolver las ecuaciones de E-L pero para los parámetros
 soluciones = smp.solve([EL1, EL2], theta1_dd, theta2_dd)
 LEF1 = smp.lambdify((theta1, theta2, theta1_d, theta2_d, t, m1, m2, L1, L2, g), soluciones[theta1_dd])
 LEF2 = smp.lambdify((theta1, theta2, theta1_d, theta2_d, t, m1, m2, L1, L2, g), soluciones[theta2_dd])
@@ -256,7 +256,7 @@ ax.set_ylim(-2.5, 2.5)
 ax.set_aspect('equal')
 ax.grid()
 
-ax.set_title("Comparación de dos pendulos dobles")
+ax.set_title("Comparación de dos pendulos dobles con condiciones iniciales 'cercanas'")
 
 #Primer pendulo: azul
 linea1, = ax.plot([], [], 'o-', color='blue', lw=3, markersize=8)
